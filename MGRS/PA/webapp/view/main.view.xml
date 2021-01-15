@@ -1,0 +1,297 @@
+<mvc:View xmlns="sap.m" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns:core="sap.ui.core" 
+	xmlns:l="sap.ui.layout" 
+	xmlns:t="sap.ui.table" height="100%" controllerName="mgrs.PA.controller.main" 
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:custom="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	<!-- <Page class="sapUiContentPadding" title="{i18n>PATitle}"> -->
+	<Page class="sapUiContentPadding" showHeader="false">
+	<IconTabBar
+		id="idIconTabBar"
+		select="handleIconTabBarSelect"
+		class="sapUiResponsiveContentPadding">
+		<items>
+			<IconTabFilter
+				text="{i18n>InputPanel}"
+				key="All" >
+				<VBox >
+			<HBox justifyContent="SpaceBetween">
+				<HBox alignItems="End"> 
+					<VBox class="sapUiTinyMarginEnd">
+						<Label text="{i18n>Division}"/>
+						<Select width="140px" id="idDivision" forceSelection="true" custom:prop="SubdivId" selectedKey="{main>/selected/SubdivId}" />
+					</VBox>
+					<VBox visible="false" class="sapUiTinyMarginEnd">
+						<Label text="{i18n>Group}"/>
+						<Select width="275px" id="idGroup" forceSelection="true" selectedKey="{main>/selected/GroupId}" custom:prop="GroupId">
+						</Select>
+					</VBox>
+					<VBox class="sapUiTinyMarginEnd">
+						<Label text="{i18n>PlanFact}"/>
+						<Select width="140px" id="idDataType" forceSelection="true" selectedKey="{main>/selected/DataTypeId}" custom:prop="DataTypeId">
+						</Select>
+					</VBox>
+					<VBox class="sapUiTinyMarginEnd">
+						<Label text="{i18n>Periodicity}"/>
+						<Select id="idGranular" forceSelection="true" selectedKey="{main>/selected/GranularId}" custom:prop="GranularId">
+						</Select>
+					</VBox>
+					<VBox class="sapUiTinyMarginEnd" visible="{main>/settings/SteelType}">
+						<Label text="{i18n>SteelType}"/>
+						<SegmentedButton 
+							id="idSteelType" 		
+							width="330px"				
+							selectedKey="{main>/selected/SteelTypeId}" 
+							/>
+					</VBox>
+				</HBox>
+				<HBox>
+					<VBox>
+						<Label text=""/>
+						<Button text="{i18n>AnalisysData}" class="sapUiTinyMarginEnd" tooltip="{i18n>AnalisysData}" press="onRouteDashPA"/>
+					</VBox>
+					<VBox>
+						<Label text=""/>
+						<Button text="{i18n>BtnSave}" class="sapUiTinyMarginEnd" tooltip="{i18n>BtnSave}" press="onSave"/>
+					</VBox>
+				</HBox>
+			</HBox>
+			<HBox justifyContent="SpaceBetween">
+				<HBox alignItems="End">
+					<Button icon="{= ${main>/settings/Collapse} ? 'sap-icon://drill-down' : 'sap-icon://drill-up'}"
+						press="onExpand"
+						type="Transparent"
+						class="sapUiTinyMarginEnd"/>
+					<VBox id="idRange" class="sapUiTinyMarginEnd" visible="{main>/show/Range}">
+						<Label text="{i18n>SelectPeriod}"/>
+						<DateRangeSelection showFooter="true" dateValue="{main>/selected/DateFrom}" secondDateValue="{main>/selected/DateTo}" custom:prop="Range" change="handleChange"/>
+					</VBox>
+					<VBox class="sapUiTinyMarginEnd" visible="{= ${main>/show/Free} &amp;&amp; ${main>/selected/CreatePeriodX} === 'E' || ${main>/show/Month} || ${main>/show/Week} || ${main>/show/Decade}}">
+						<Label text="{i18n>SelectYear}"/>
+						<Select id="idYear" forceSelection="true" selectedKey="{main>/selected/Year}" items="{main>/periodicity/Year}" custom:prop="Year">
+							<core:Item text="{main>text}" key="{main>text}"/>
+						</Select>
+					</VBox>
+
+					<VBox class="sapUiTinyMarginEnd" visible="{main>/show/Year}">
+						<Label text="{i18n>SelectYear}"/>
+						<MultiComboBox id="idYearRange" selectionChange="onSelectYearRange" items="{main>/periodicity/Year}" 
+						selectedKeys="{main>/selected/YearRange}" custom:prop="YearRange" width="340px">
+							<core:Item text="{main>text}" key="{main>key}"/>
+						</MultiComboBox>
+					</VBox>
+
+					<VBox class="sapUiTinyMarginEnd" visible="{= ${main>/show/Week} || ${main>/show/Decade}}">
+						<Label text="{i18n>SelectMonth}"/>
+						<Select id="idMonth" forceSelection="true" selectedKey="{main>/selected/Month}" items="{main>/periodicity/Month}" custom:prop="Month">
+							<core:Item text="{main>text}" key="{main>key}" />
+						</Select>
+					</VBox>
+
+					<VBox class="sapUiTinyMarginEnd" visible="{main>/show/Month}">
+						<Label text="{i18n>SelectMonth}"/>
+						<MultiComboBox id="idRangeMonth" selectionFinish="onSelectMonthRange" width="340px" selectedKeys="{main>/selected/MonthRange}" items="{main>/periodicity/Month}" custom:prop="MonthRange">
+							<core:Item text="{main>text}" key="{main>key}" />
+						</MultiComboBox>
+					</VBox>
+					<VBox class="sapUiTinyMarginEnd" visible="{main>/show/Decade}">
+						<Label text="{i18n>SelectDecade}"/>
+						<MultiComboBox id="idDecade" selectionFinish="onChangeDecade" width="340px"
+						selectedKeys="{main>/selected/Decade}" items="{main>/periodicity/Decade}" custom:prop="Decade">
+							<core:Item text="{main>text}" key="{main>key}"/>
+						</MultiComboBox>
+					</VBox>
+
+				<HBox visible="{main>/show/Free}" alignItems="End">
+					<VBox class="sapUiTinyMarginEnd" visible="{= ${main>/selected/CreatePeriodX} === 'E'}">
+						<Label text="{i18n>SelectCustomPeriod}"/>
+						<Select id="idFree" width="340px" change="onSelectFreeRange" forceSelection="false" items="{main>/periodicity/Free}" custom:prop="Free">
+							<core:Item text="{main>text}" key="{main>text}"/>
+						</Select>
+					</VBox>
+
+					<VBox class="sapUiTinyMarginEnd" visible="{= ${main>/selected/CreatePeriodX} === 'C'}">
+						<Label text="{i18n>NewPeriod}"/>
+						<DateRangeSelection dateValue="{main>/selected/DateFrom}" secondDateValue="{main>/selected/DateTo}" change="handleChange" id="idFreeDate"/>
+					</VBox>
+
+					<VBox width="160px" visible="{= ${main>/show/Free} &amp;&amp; ${main>/selected/DataTypeId} === '1'}" class="sapUiTinyMarginEnd">
+						<SegmentedButton 
+							id="idSegmentedButton"
+							selectedKey="{main>/selected/CreatePeriodX}" 
+							>
+							<items>
+								<SegmentedButtonItem text="{i18n>BtnEdit}" tooltip="{i18n>BtnEditTooltip}" key="E"/>
+								<SegmentedButtonItem text="{i18n>BtnCreate}" tooltip="{i18n>BtnCreateTooltip}" key="C"/>
+							</items>
+						</SegmentedButton>
+					</VBox>
+				</HBox>
+
+			
+					
+					<VBox class="sapUiTinyMarginEnd" visible="{main>/show/Week}">
+						<Label text="{i18n>SelectWeek}"/>
+						<MultiComboBox id="idWeeks" selectionFinish="onChangeWeek" width="340px"  selectedKeys="{main>/selected/Week}" custom:prop="Week" items="{main>/periodicity/Week}">
+							<core:Item text="{main>text}" key="{main>key}"/>
+						</MultiComboBox>
+					</VBox>
+					<Button icon="sap-icon://synchronize" text="{i18n>Refresh}" tooltip="{i18n>TakeData}" press="loadTableData" type="Emphasized" class="sapUiTinyMarginEnd"/>
+					<ToggleButton text="{i18n>Replicate}" tooltip="{i18n>ReplicateTooltip}" pressed="{main>/selected/ReplicationX}" visible="{main>/show/Range}" press="onPressCompact"/>
+				</HBox>				
+			<HBox height="inherit" alignItems="End">
+				<Button 
+					text="{i18n>RemovePeriod}" 
+					tooltip="{i18n>RemovePeriod}"
+					press="onRemoveLastPeriod" 
+					type="Reject" 
+					visible="{= ${main>/show/LastPeriod}  &amp;&amp; ${main>/selected/DataTypeId} === '1' &amp;&amp; ${main>/selected/CreatePeriodX} === 'E'}" />
+
+				<Button text="{i18n>BtnClear}" tooltip="{i18n>BtnClearTooltip}" class="sapUiTinyMarginBeginEnd" press="onClear" type="Emphasized"/>
+			</HBox>
+			</HBox>
+		</VBox>
+
+		<HBox id="id-content"></HBox>
+		<t:TreeTable id="idTable" selectionMode="None" enableSelectAll="false" minAutoRowCount="13" visibleRowCountMode="Interactive" class="table-hide-node">
+			<t:noData>
+			<HBox height="100%" alignItems="Center" justifyContent="Center">
+				<Text text="Необходимо обновить данные"/>
+			</HBox>
+			</t:noData>
+			<t:columns>
+				<t:Column>
+					<Label text="{i18n>IndicatorName}"/>
+					<t:template>
+						<Text text="{oDataModel>Txtlg}" tooltip="{oDataModel>Txtlg}"/>
+					</t:template>
+				</t:Column>
+				<t:Column width="180px">
+					<Label text="{i18n>Date}"/>
+					<t:template>
+						<Text text="{oDataModel>DateStr}"/>
+					</t:template>
+				</t:Column>
+
+				<t:Column width="180px" visible="{main>/columns/thickness}">
+					<Label text="{i18n>Thickness}"/>
+					<t:template>
+						<Text text="{oDataModel>ThicknessId}"/>
+					</t:template>
+				</t:Column>
+
+				<t:Column width="180px" visible="{main>/columns/brigade}">
+					<Label text="{i18n>Brigade}"/>
+					<t:template>
+						<Text text="{oDataModel>BrigadeTxtsh}"/>
+					</t:template>
+				</t:Column>
+
+				<t:Column width="180px" visible="{main>/columns/aggregate}">
+					<Label text="{i18n>Aggregate}"/>
+					<t:template>
+						<Text text="{oDataModel>AggregateTxtsh}"/>
+					</t:template>
+				</t:Column>
+				
+				<t:Column width="250px" visible="{main>/columns/redistrib}">
+					<Label text="{i18n>Location}"/>
+					<t:template>
+						<Text text="{oDataModel>RedistribTxtmd}"/>
+					</t:template>
+				</t:Column>
+
+
+				<t:Column width="180px" visible="{main>/columns/setValid}" class="table-set">
+					<Label text="{i18n>Set}"/>
+					<t:template>
+						<Input class="table-set table-input" value="{oDataModel>ValueSet}" editable="{oDataModel>ValueEditX}" custom:prop="ValueSet">
+							<customData>
+								<core:CustomData key="show" value="{= !${oDataModel>ValueEditX} &amp;&amp; !(${oDataModel>ValueSet} > 0) ? 'hide' : 'show' }" writeToDom="true" />
+							</customData>
+						</Input>
+					</t:template>
+				</t:Column>
+
+				<t:Column width="180px" visible="{main>/columns/setValid}" class="table-valid">
+					<Label text="{i18n>Valid}"/>
+					<t:template>
+						<Input class="table-valid table-input" value="{oDataModel>ValueValid}" editable="{oDataModel>ValueEditX}" custom:prop="ValueValid">
+							<customData>
+								<core:CustomData key="show" value="{= !${oDataModel>ValueEditX} &amp;&amp; !(${oDataModel>ValueValid} > 0) ? 'hide' : 'show' }" writeToDom="true" />
+							</customData>
+						</Input>
+					</t:template>
+				</t:Column>
+
+				<t:Column width="180px" visible="{= ${main>/columns/setValid}}">
+					<Label text="{i18n>Value}"/>
+					<t:template>
+						<Input 
+						class="table-input"
+						type="Number"
+						value="{parts: [{path: 'oDataModel>ValueSet'},{path:'oDataModel>ValueValid'}], formatter: '.amountFormatter'}"
+						editable="false">
+						<customData>
+								<core:CustomData 
+									key="show" 
+									value="{= !${oDataModel>ValueEditX} &amp;&amp; !(+${oDataModel>ValueSet} / +${oDataModel>ValueValid} > 0) ? 'hide' : 'show' }"
+									writeToDom="true" />
+							</customData>
+						</Input>
+					</t:template>
+				</t:Column>
+
+				<t:Column width="180px" visible="{= !${main>/columns/setValid}}" class="table-value">
+					<Label text="{i18n>Value}"/>
+					<t:template>
+						<Input 
+						class="table-value table-input"
+						type="Number"
+						value="{oDataModel>Value}"
+						editable="{oDataModel>ValueEditX}"
+						custom:prop="Value">
+							<customData>
+								<core:CustomData key="show" value="{= !${oDataModel>ValueEditX} &amp;&amp; !(${oDataModel>Value} > 0) ? 'hide' : 'show' }" writeToDom="true" />
+							</customData>
+						</Input>
+						
+					</t:template>
+				</t:Column>
+				
+				<t:Column width="75px">
+					<Label text="{i18n>Meins}"/>
+					<t:template>
+						<Text text="{oDataModel>Meins}"/>
+					</t:template>
+				</t:Column>
+			</t:columns>
+			
+		</t:TreeTable>
+		</IconTabFilter>
+			<IconTabSeparator />
+			<IconTabFilter
+				text="{i18n>ViewPanel}"
+				key="Ok"
+				id="idPanel">
+				<Button text="{i18n>GenerateTableau}" tooltip="{i18n>GenerateTableau}" press="onLoadTableau"/>
+				<VBox id="idTabloContainer">
+					<html:script type='text/javascript' src='https://nl-st-tableau01/javascripts/api/viz_v1.js'/>
+					<html:div id="idTablo" class='tableauPlaceholder' style='width: 1920px; height: 1080px;'>
+						<html:object class='tableauViz' width='1920px' height='1080px' style='display:none;'>
+							<html:param name='host_url' value='https%3A%2F%2Fnl-st-tableau01%2F' />
+							<html:param name='embed_code_version' value='3' />
+							<html:param name='name' value='test02&#47;sheet1' />
+						</html:object>
+					</html:div>
+				</VBox>
+			</IconTabFilter>
+		</items>
+	</IconTabBar>
+
+
+		
+	</Page>
+</mvc:View>
+

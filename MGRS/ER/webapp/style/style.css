@@ -1,0 +1,9 @@
+.table-input>div>input {
+    border: none;    
+}
+.table-input[data-show="hide"]>div>input {
+    display: none;
+}
+.table-hide-node .sapUiTableTr[aria-level="2"] .sapUiTableTreeIcon {
+    display: none;
+}

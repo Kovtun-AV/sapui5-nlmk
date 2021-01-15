@@ -1,0 +1,53 @@
+{
+	"sap.app": {
+		"id": "mgrs.ER",
+		"i18n": "i18n/i18n.properties",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"dataSources": {
+			"oDataService": {
+				"uri": "/sap/opu/odata/sap/ZMGR_SRV",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"fullWidth": true
+	  },
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "mgrs.ER.view.main",
+			"type": "XML",
+			"async": true
+		},
+		"dependencies": {
+			"libs": {
+				"sap.m": {}
+			}
+		},
+		"config": {
+			"sample": {
+				"stretch": true
+			}
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "mgrs.ER.i18n.i18n"
+				}
+			},
+			"oDataModel": {
+				"dataSource": "oDataService",
+				"settings" : {
+					"useBatch" : true,
+					"defaultBindingMode": "TwoWay"
+				  }
+			}
+		}
+	}
+}

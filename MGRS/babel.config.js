@@ -1,0 +1,10 @@
+module.exports = {
+    presets: [
+        ['@babel/env', {
+            targets: {
+                "chrome": "58",
+                "ie": "11"
+            },
+        }],
+    ]
+};
